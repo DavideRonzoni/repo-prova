@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Code Scanner with QuaggaJS</title>
+<style>
+#video-container {
+  width: 100%;
+  height: auto;
+  text-align: center;
+}
+
+#qr-result {
+  margin-top: 20px;
+}
+</style>
+</head>
+<body>
+
+<div id="video-container">
+  <video id="video" width="400" height="300" autoplay></video>
+</div>
+
+<div id="qr-result"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>
+<script>
+// Inizializzazione del QR code scanner
+Quagga.init({
+  inputStream : {
+    name : "Live",
+    type : "LiveStream",
+    target: document.querySelector('#video'),
+    constraints: {
+      facingMode: "environment"
+    }
+  },
+  decoder : {
+    readers : ["ean_reader", "ean_8_reader", "code_39_reader", "code_39_vin_reader", "codabar_reader", "upc_reader", "upc_e_reader", "i2of5_reader", "2of5_reader", "code_128_reader"]
+  }
+}, function(err) {
+    if (err) {
+        console.error(err);
+        return;
+    }
+    console.log("Initialization finished. Ready to start");
+    Quagga.start();
+});
+
+// Quando viene trovato un codice, visualizza il risultato
+Quagga.onDetected(function(result) {
+    var code = result.codeResult.code;
+    document.getElementById('qr-result').textContent = code;
+    // Puoi aggiungere ulteriori azioni qui in base al contenuto del QR code
+});
+</script>
+
+</body>
+</html>
